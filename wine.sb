@@ -1,0 +1,73 @@
+(version 1)
+(deny default)
+
+# Optional toggles for debugging
+;(allow network-outbound)
+;(deny network*)
+;(debug deny)
+;(trace "trace.sb")
+
+; Allow bidirectional network
+(allow network*)
+
+; Allow children to spawn and other mechanisms.
+(allow process*)
+(allow sysctl-read)
+
+; Allow some IPC
+(allow mach-lookup)
+(allow ipc-posix-shm-read-data)
+(allow mach-register)
+
+; This is for the audio and graphical subsystem
+(allow iokit-open)
+
+; Need to clean this up	
+(allow file-read* (path "/usr/local/bin/wine"))
+(allow file-read-metadata (path "/var/*"))
+(allow file-write-unlink (path "/private/tmp/*"))
+(allow file-write* (path "/private/*"))
+
+(allow file-read*
+    (regex
+        #"^/Users/[^.]+/.wine/*"
+        #"^/Users/[^.]+/Library"
+        #"^/Users/[^.]+/Downloads/*"
+        #"^/Library/*"
+	#"^/dev/dtracehelper"
+        #"^/System/Library/*"
+        #"^/usr/local/lib/*"
+	#"^/usr/local/Cellar/wine/*"
+        #"^/usr/lib/*"
+	#"^/tmp/*"
+        #"^/usr/share/*"
+        #"^/private/*"
+        #"^/dev/*"
+	#"^/usr/*"
+    )
+)
+
+(allow file-read-data
+    (regex
+        #"^/Users/[^.]+/.wine/*"
+    )
+)
+
+(allow file-read-metadata
+    (regex
+        #"^/Users/[^.]+/.wine/*"
+     	#"^/"
+    )
+)
+
+(allow file-write*
+    (regex
+        #"^/Users/[^.]+/.wine/*"
+     	#"^/dev/dtracehelper"
+	#"^/tmp/*"
+	#"^/private/tmp/*"
+     	#"^/dev/null"
+    )
+)
+
+(allow file-ioctl (path "/dev/dtracehelper"))
