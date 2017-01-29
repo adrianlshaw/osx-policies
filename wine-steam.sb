@@ -1,7 +1,7 @@
 (version 1)
 (deny default)
 
-# Optional toggles for debugging
+;Optional toggles for debugging
 ;(allow network-outbound)
 ;(deny network*)
 ;(debug deny)
@@ -15,12 +15,21 @@
 (allow sysctl-read)
 
 ; Allow some IPC
-(allow mach-lookup)
 (allow ipc-posix-shm-read-data)
+(allow ipc-posix-shm-write-data)
+(allow ipc-posix-shm-read-metadata)
+(allow mach-lookup)
 (allow mach-register)
 
 ; This is for the audio and graphical subsystem
 (allow iokit-open)
+(allow hid-control)
+
+; Needed by DX
+(allow system-socket)
+
+; Need an IOCTL
+(allow file-ioctl (path "/dev/dtracehelper"))
 
 ; Need to clean this up	
 (allow file-read* (path "/usr/local/bin/wine"))
@@ -28,12 +37,18 @@
 (allow file-write-unlink (path "/private/tmp/*"))
 (allow file-write* (path "/private/*"))
 
+
+(allow file-read-data (path "/opt/X11/lib/*"))
+
 (allow file-read*
     (regex
         #"^/Users/[^.]+/.wine/*"
+	#"^/opt/X11/*"
+	#"^/opt/X11/lib/*"
         #"^/Users/[^.]+/Library"
-        #"^/Users/[^.]+/Downloads/*"
         #"^/Library/*"
+        #"^/Users/[^.]+/Downloads/*"
+        #"^/Users/[^.]+/Documents/Square\ Enix/*"
 	#"^/dev/dtracehelper"
         #"^/System/Library/*"
         #"^/usr/local/lib/*"
@@ -47,27 +62,30 @@
     )
 )
 
-(allow file-read-data
-    (regex
-        #"^/Users/[^.]+/.wine/*"
-    )
-)
 
 (allow file-read-metadata
     (regex
-        #"^/Users/[^.]+/.wine/*"
      	#"^/"
     )
 )
 
+(allow file-write-create
+ (regex
+	#"^/Users/[^.]+/Documents/Square\ Enix/*"
+ )
+ )
+
 (allow file-write*
     (regex
         #"^/Users/[^.]+/.wine/*"
-     	#"^/dev/dtracehelper"
+	#"^/Users/[^.]+/Documents/Square\ Enix/*"
+	#"^/dev/dtracehelper"
 	#"^/tmp/*"
 	#"^/private/tmp/*"
      	#"^/dev/null"
+	#"^/private/var/*"
     )
 )
 
-(allow file-ioctl (path "/dev/dtracehelper"))
+
+
