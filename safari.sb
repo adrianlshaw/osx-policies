@@ -1,0 +1,36 @@
+(version 1)
+; Use (debug all) to see every action)
+(debug deny)
+(deny default)
+(import "/usr/share/sandbox/bsd.sb")
+(allow network-outbound)
+(allow signal)
+(allow sysctl-read)
+(allow process-exec (regex #"^/Applications/Safari.app/"))
+; This allows listing of the directory, not execution...
+(allow process-exec (literal "/private/var/tmp"))
+(allow mach-lookup)
+
+; Read anything
+(allow file-read*)
+
+; Allow to write these files:
+(allow file-write*
+(regex
+; Required for converting .ps to .pdf on the fly
+#"^/Library/Caches/"
+#"^/dev/dtracehelper"
+#"^/private/tmp"
+#"^/private/var/folders"
+#"^/private/var/tmp"
+#"^HOME/Downloads/"
+; Sogudi needs this to save its preferences
+#"^HOME/Library/Application Support/[^/]+$"
+#"^HOME/Library/Caches/"
+#"^HOME/Library/Cookies/"
+#"^HOME/Library/Keychains/"
+#"^HOME/Library/Preferences/"
+#"^HOME/Library/PubSub/"
+#"^HOME/Library/Safari/"
+)
+)
